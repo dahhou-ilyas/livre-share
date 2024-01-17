@@ -38,4 +38,50 @@ const userSchema=new mongoose.Schema({
           type: String, // "available", "reserved", etc.
         },
     }],
+    exchangeRequests: [{
+        fromUser: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        book: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Book',
+        },
+        status: {
+          type: String, // "pending", "accepted", "rejected", etc.
+        },
+    }],
+    chatHistory: [{
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        messages: [{
+          content: {
+            type: String,
+          },
+          timestamp: {
+            type: Date,
+            default: Date.now,
+          },
+        }],
+      }],
+      exchangeHistory: [{
+        book: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Book',
+        },
+        withUser: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      }],
 })
+
+const User=mongoose.model('User',userSchema);
+module.exports=User;
+
