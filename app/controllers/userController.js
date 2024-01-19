@@ -24,10 +24,12 @@ module.exports={
         }
     },
     addUsers:async (req,res)=>{
-        const {username,email,password}=req.body
+        const {username,email,password,preferences}=req.body
+        if(!username || !email || !password){
+            res.status(400).json({message:"not full information"})
+        }
         try {
-            const newUser = new User(req.body); // Utilisez req.body pour récupérer les données du corps de la requête
-    
+            const newUser = new User({username,email,password,preferences}); // Utilisez req.body pour récupérer les données du corps de la requête
             // Enregistrez le nouvel utilisateur dans la base de données
             const savedUser = await newUser.save();
     
