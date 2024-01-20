@@ -1,4 +1,7 @@
 const User = require('../models/User');
+const Book=require('../models/Book');
+const mongoose=require('mongoose');
+
 
 module.exports={
     getUsers:async(req,res)=>{
@@ -40,14 +43,26 @@ module.exports={
         }
     },
     deleteUser:async (req,res)=>{
+        const session = await mongoose.startSession();
+        session.startTransaction();
         const id=req.params.id;
         try{
             const user=await User.findByIdAndDelete(id);
             if(!user){
-                res.status(404).json({message:"utilisateur not found"});
+                await session.abortTransaction();
+                session.endSession();
+                return { message: 'Utilisateur non trouvé' };
             }
+            await Book.deleteMany({addedBy:id});
+
+            await session.commitTransaction();
+            session.endSession();
+            
             res.status(204).send();
         }catch(e){
+            await session.abortTransaction();
+            session.endSession();
+            console.error('Erreur lors de la suppression de l\'utilisateur et des livres:', e);
             res.status(500).json({error:"'Erreur serveur'"})
         }
     },
