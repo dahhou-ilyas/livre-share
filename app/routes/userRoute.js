@@ -8,7 +8,7 @@ router.post('/', userController.addUsers);
 router.put('/:id', userController.updateUsers);
 router.delete('/:id', userController.deleteUser);
 
-router.post('/:userId/books',bookController);
+router.post('/:userId/books',bookController.addBook);
 
 
 module.exports = router;
