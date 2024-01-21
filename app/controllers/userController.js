@@ -51,7 +51,7 @@ module.exports={
             if(!user){
                 await session.abortTransaction();
                 session.endSession();
-                return { message: 'Utilisateur non trouvé' };
+                res.status(404).json({message:"user not found"});
             }
             await Book.deleteMany({addedBy:id});
 
@@ -88,6 +88,37 @@ module.exports={
         } catch (error) {
             console.error('Erreur lors de la mise à jour de l\'utilisateur :', error);
             return res.status(500).json({ message: 'Erreur serveur' });
+        }
+    },
+    sendExchangeRequest:async (req,res)=>{
+        const {fromUser,bookId}=req.body;
+        const userId=req.params.userId;
+        
+        try {
+            const user_request=await User.findById(userId);
+            const user_resonse=await User.findById(fromUser);
+
+            if(!user_request || !user_resonse){
+                res.status(404).json({message:"utilisateru not found"});
+            }
+            user_request.exchangeRequests.push({
+                fromUser,
+                book: bookId,
+                status: "pending",
+            });
+            user_resonse.notifications.push({
+                type:"exchange Request",
+                content:{
+                    user:userId,
+                    book:bookId,
+                }
+            })
+            await user_request.save();
+            await user_resonse.save();
+            res.status(201).json({ message: 'Demande d\'échange envoyée avec succès' });
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de la demande d\'échange :', error);
+            res.status(500).json({ error: 'Erreur serveur' });
         }
     }
 }

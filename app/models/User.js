@@ -38,6 +38,7 @@ const userSchema=new mongoose.Schema({
         },
         status: {
           type: String, // "available", "reserved", etc.
+          default: "available",
         }
     }],
     exchangeRequests: [{
@@ -51,6 +52,7 @@ const userSchema=new mongoose.Schema({
         },
         status: {
           type: String, // "pending", "accepted", "rejected", etc.
+          default: "pending"
         },
     }],
     chatHistory: [{
@@ -68,20 +70,59 @@ const userSchema=new mongoose.Schema({
           },
         }],
       }],
-      exchangeHistory: [{
-        book: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Book',
+      notifications:[{
+        type: {
+          type: String, // "exchangeRequest", "message", etc.
+          required: true,
         },
-        withUser: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
+        status:{
+          type: String,
+          required: true,
+          default: "pending"
+        },
+        content: {
+          user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+          },
+          book: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Book',
+          },
         },
         timestamp: {
           type: Date,
           default: Date.now,
         },
       }],
+      outgoingBooks: [{
+        book: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Book',
+        },
+        toUser: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now,
+        },
+    }],
+    incomingBooks: [{
+        book: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Book',
+        },
+        fromUser: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now,
+        },
+    }],
 })
 // Middleware pour hacher le mot de passe avant de sauvegarder l'utilisateur
 userSchema.pre('save',async function(next){

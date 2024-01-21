@@ -9,7 +9,9 @@ router.put('/:id', userController.updateUsers);
 router.delete('/:id', userController.deleteUser);
 
 router.post('/:userId/books',bookController.addBook);
-router.delete('/:userId/books/:bookId',bookController.deletebook)
+router.delete('/:userId/books/:bookId',bookController.deletebook);
+
+router.post('/:userId/exchangeRequests', userController.sendExchangeRequest);
 
 
 module.exports = router;
