@@ -38,7 +38,7 @@ const userSchema=new mongoose.Schema({
         },
         status: {
           type: String, // "available", "reserved", etc.
-          default: "available",
+          default: "available", 
         }
     }],
     exchangeRequests: [{

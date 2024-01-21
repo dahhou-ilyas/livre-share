@@ -2,6 +2,7 @@ const router=require('express').Router();
 const exchangeController=require('../controllers/exchangeController');
 
 
-router.get('/:userId', exchangeController.exchangeResponse);
+router.post('/:userId', exchangeController.exchangeResponse);
+router.get('/cc',exchangeController.hello)
 
 module.exports = router;

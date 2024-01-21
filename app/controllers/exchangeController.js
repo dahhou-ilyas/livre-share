@@ -13,10 +13,13 @@ module.exports={
                     User.findById(user_ownerId),
                     User.findById(man_who_requested_the_bookId)
                 ]);
-                if(!user_owner || man_who_requested){
+                if(!user_owner || !man_who_requested){
                     res.status(404).json({message:"users or user not found"});
                 }
-
+                const bookExists = await Book.exists({ _id: bookId,addedBy: user_ownerId });
+                if(!bookExists){
+                    res.status(404).json({message:"book not found"});
+                }
                 const filter_owner = {
                     '_id': user_ownerId,
                     'notifications.content.user': man_who_requested_the_bookId,
@@ -26,6 +29,7 @@ module.exports={
                 const update_owner = {
                   $set: {
                     'notifications.$.status': status,
+                    'library.$.status':"reserved"
                   },
                 };
 
@@ -52,15 +56,26 @@ module.exports={
 
                 // il faut ajouter le book correspondant à la userowner dans le les book entrant dans la collection de la user request 
                 // en suite on va ajouter le book dans le document correspondat à la user owner dans les book sotant
+                user_owner.outgoingBooks.push({
+                    book:bookId,
+                    toUser:man_who_requested_the_bookId
+                })
 
-                if (!result) {
-                  return res.status(404).json({ message: "Notification not found" });
-                }
-                
+                man_who_requested.incomingBooks.push({
+                    book:bookId,
+                    fromUser:user_ownerId,
+                })
+                //il faut modifier aussi la library (en modifiant le status reserved)
+                //aussi il faut faire des transaction handle error pour n'est modifer le database lors d'un erreur
+                await Promise.all([man_who_requested.save(),user_owner.save()])
+                res.status(200).json({message:"echange est bine valide",status})
 
             }
         } catch (error) {
-            
+            res.status(500).json({error:"erreur dans la base de donné"})
         }
+    },
+    hello: (req, res) => {
+        res.send("eeeeeee");
     }
 }

@@ -101,6 +101,10 @@ module.exports={
             if(!user_request || !user_resonse){
                 res.status(404).json({message:"utilisateru not found"});
             }
+            const bookExistsForUser = await Book.exists({ _id: bookId, addedBy: fromUser });
+            if(!bookExistsForUser){
+                res.status(404).json({message:"le book ne existe pas dans la collection de user"})
+            }
             user_request.exchangeRequests.push({
                 fromUser,
                 book: bookId,
