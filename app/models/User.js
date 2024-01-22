@@ -124,6 +124,10 @@ const userSchema=new mongoose.Schema({
         },
     }],
 })
+
+//au lieu de incoming et outcoming on peut mette une historique avec un champ unimérer qui continne emit ou recevoire
+
+
 // Middleware pour hacher le mot de passe avant de sauvegarder l'utilisateur
 userSchema.pre('save',async function(next){
     try{

@@ -63,8 +63,8 @@ module.exports={
                 
                 await Promise.all([man_who_requested.save(),user_owner.save()])
                 res.status(200).json({message:"echange est bine valide",status})
-
             }
+            // il faut ajouter assui une action pour rejected
         } catch (error) {
             res.status(500).json({error:"erreur dans la base de donné"})
         }
@@ -88,6 +88,15 @@ module.exports={
             res.status(200).json(specificExchangeRequests)
         } catch (error) {
             res.status(500).json({error:"error in database"})
+        }
+    },
+    returnBook:async (req,res)=>{
+        const notOriginUserId=req.params.userId;
+        const {originaleUserId,BookId}=req.body;
+        try {
+            
+        } catch (error) {
+            
         }
     }
 }
