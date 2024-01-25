@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Book=require('../models/Book');
 const mongoose=require('mongoose');
-
+const exchangeService=require('../service/exchangeService')
 module.exports={
     exchangeResponse:async (req,res)=>{
         const user_ownerId=req.params.userId;
@@ -129,9 +129,17 @@ module.exports={
         const notOriginUserId=req.params.userId;
         const {originaleUserId,BookId}=req.body;
         try {
-            
+            await Promise.all([
+                exchangeService.removeOutgoingBook(originaleUserId,notOriginUserId,BookId),
+                exchangeService.removeIncomingBook(originaleUserId,notOriginUserId,BookId),
+                exchangeService.changeLibraryStatus(originaleUserId,BookId),
+                exchangeService.resolveNotification(originaleUserId,notOriginUserId,BookId)
+            ])
+            res.status(200).json({message:"les book est bien returner"});
         } catch (error) {
-            
+            console.log(error);
+            res.status(500).json({error:"erreur dans la base de donné"})
         }
     }
+
 }
