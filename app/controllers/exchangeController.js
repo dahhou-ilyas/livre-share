@@ -108,7 +108,6 @@ module.exports={
         res.send("eeeeeee");
     },
 
-    //cette methode n'est pas encore tester mais il est bayna
     showExchangeRequestswithauser:async (req,res)=>{
         const userId=req.params.userId;
         const {fromUserId}=req.body;
@@ -125,6 +124,8 @@ module.exports={
             res.status(500).json({error:"error in database"})
         }
     },
+
+    //bien fonctionne cette functionnalité
     returnBook:async (req,res)=>{
         const notOriginUserId=req.params.userId;
         const {originaleUserId,BookId}=req.body;
