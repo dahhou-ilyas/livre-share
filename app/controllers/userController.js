@@ -1,9 +1,29 @@
 const User = require('../models/User');
 const Book=require('../models/Book');
 const mongoose=require('mongoose');
+const bcrypt=require('bcrypt');
+const { generateAccessToken } = require('../service/generateAccessToken');
+
 
 
 module.exports={
+    login:async (req,res)=>{
+        const {username,password}=req.body;
+        try {
+            const user=await User.findOne({username});
+            if(!user){
+                res.status(404).json({ message: 'Authentication failed' });
+            }
+            const passwordMatch=await bcrypt.compare(password,user.password);
+            if(!passwordMatch){
+                res.status(401).json({ message: 'Authentication failed' });
+            }
+            const token=generateAccessToken(user._id,username)
+            res.status(200).json(token);
+        } catch (error) {
+            res.status(500).json({error:"error dans la base de donne"})
+        }
+    },
     getUsers:async(req,res)=>{
         try {
             const users = await User.find({}).exec();
