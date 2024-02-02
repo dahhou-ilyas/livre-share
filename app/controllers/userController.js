@@ -19,7 +19,7 @@ module.exports={
                 res.status(401).json({ message: 'Authentication failed' });
             }
             const token=generateAccessToken(user._id,username)
-            res.status(200).json(token);
+            res.status(200).json({token});
         } catch (error) {
             res.status(500).json({error:"error dans la base de donne"})
         }

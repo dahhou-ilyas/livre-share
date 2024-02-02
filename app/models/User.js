@@ -123,6 +123,10 @@ const userSchema=new mongoose.Schema({
             default: Date.now,
         },
     }],
+    socketId:{
+      type: String,
+      default: null,
+    }
 })
 
 //au lieu de incoming et outcoming on peut mette une historique avec un champ unimérer qui continne emit ou recevoire

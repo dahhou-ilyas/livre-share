@@ -14,3 +14,5 @@ function AuthenticateToken(req,res,next){
         next();
     })
 }
+
+module.exports={AuthenticateToken}
